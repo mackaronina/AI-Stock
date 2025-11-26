@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Login</h1>
+<label for="username">Username</label>
+<input type="text" id="username" name="username">
+<label for="password">Password</label>
+<input type="password" id="password" name="password">
+<button id="login_button">Log in</button>
+<script>
+    const username = document.getElementById("username");
+    const password = document.getElementById("password");
+    const button = document.getElementById("login_button");
+    button.addEventListener("click", async () => {
+        const body = JSON.stringify({username: username.value, password: password.value});
+        const response = await fetch("{{ url_for('login_user') }}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: body
+        });
+        if (response.ok)
+            redirect_to("{{ url_for('home_page') }}");
+        else {
+            const result = await response.json();
+            set_error_text(result.detail);
+        }
+    });
+</script>
+{% endblock %}
