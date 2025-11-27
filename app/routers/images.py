@@ -5,7 +5,7 @@ from fastapi.templating import Jinja2Templates
 
 from app.dao.dao import ImageDAO
 from app.dependencies import CurrentUser, ImageById, OptionalCurrentUser
-from app.exceptions import GeneratingImageException
+from app.exceptions import GeneratingImageException, ChangingVisibilityImageException
 from app.schemas import RequestGenerateImage
 from app.utils.api_calls.cloudflare import generate_image_from_prompt, generate_tags_for_image
 from app.utils.api_calls.imdb import upload_image_to_imdb
@@ -36,3 +36,11 @@ async def create_image(current_user: CurrentUser, generate_data: RequestGenerate
 async def get_image_page(image: ImageById, current_user: OptionalCurrentUser, request: Request) -> HTMLResponse:
     return templates.TemplateResponse(request=request, name='get_image.html',
                                       context={'current_user': current_user, 'image': image})
+
+
+@router.patch('/visibility/{image_id}')
+async def change_image_visibility(image: ImageById, current_user: CurrentUser) -> dict:
+    if image.author_id != current_user.id:
+        raise ChangingVisibilityImageException()
+    await ImageDAO.update_one_by_id(image.id, is_public=not image.is_public)
+    return {'message': 'successfully changed image visibility'}

@@ -7,4 +7,21 @@
 <p>{{ image.tags | join(' ')}}</p>
 <p>Created at {{ image.created_at.strftime('%d.%m.%Y') }}</p>
 <p>by <a href="{{ url_for('get_user_page', user_id=image.author_id) }}">{{ image.author.username }}</a></p>
+{% if image.is_public %}
+{% if current_user and current_user.id==image.author_id %}
+<button id="visibility_button">Make private</button>
+{% endif %}
+<p>Likes: {{ image.likes | length }}</p>
+{% else %}
+<button id="visibility_button">Make public</button>
+{% endif %}
+<script>
+    const visibilityButton = document.getElementById("visibility_button");
+    if (visibilityButton) {
+        visibilityButton.addEventListener("click", async () => {
+            await fetch("{{ url_for('change_image_visibility', image_id=image.id) }}", {method: "PATCH"});
+            refresh_page();
+        });
+    }
+</script>
 {% endblock %}

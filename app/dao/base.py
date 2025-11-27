@@ -48,3 +48,10 @@ class BaseDAO(Generic[T]):
         data = await session.get(cls.model, data_id)
         if data:
             await session.delete(data)
+
+    @classmethod
+    @connection
+    async def update_one_by_id(cls, data_id: uuid.UUID, session: AsyncSession, **update_values) -> None:
+        record = await session.get(cls.model, data_id)
+        for key, value in update_values.items():
+            setattr(record, key, value)

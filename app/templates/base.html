@@ -28,6 +28,10 @@
         const errorText = document.getElementById("error_text");
         errorText.innerText = text;
     }
+
+    function refresh_page() {
+        window.location.reload();
+    }
 </script>
 <header>
     <a href="{{ url_for('home_page') }}">Home</a>
