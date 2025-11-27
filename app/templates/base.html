@@ -35,6 +35,7 @@
 </script>
 <header>
     <a href="{{ url_for('home_page') }}">Home</a>
+    <a href="{{ url_for('get_all_images_page') }}">Explore</a>
     <a href="{{ url_for('create_image_page') }}">Create</a>
     {% if current_user %}
     <a href="{{ url_for('get_me_page') }}">Profile</a>

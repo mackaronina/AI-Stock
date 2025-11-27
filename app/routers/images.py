@@ -32,6 +32,13 @@ async def create_image(current_user: CurrentUser, generate_data: RequestGenerate
         raise GeneratingImageException()
 
 
+@router.get('/')
+async def get_all_images_page(current_user: OptionalCurrentUser, request: Request) -> HTMLResponse:
+    images = await ImageDAO.find_all()
+    return templates.TemplateResponse(request=request, name='get_all_images.html',
+                                      context={'current_user': current_user, 'images': images})
+
+
 @router.get('/{image_id}')
 async def get_image_page(image: ImageById, current_user: OptionalCurrentUser, request: Request) -> HTMLResponse:
     return templates.TemplateResponse(request=request, name='get_image.html',

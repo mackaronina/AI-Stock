@@ -11,6 +11,8 @@
 <a href="{{ url_for('get_image_page', image_id=image.id) }}">
     <img src="{{ image.url }}" height="256" width="192" alt="Loading...">
 </a>
+{% else %}
+<p>Nothing found</p>
 {% endfor %}
 <script>
     const logoutButton = document.getElementById("logout_button");
