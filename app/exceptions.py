@@ -51,9 +51,9 @@ class GeneratingImageException(CustomHTTPException):
     detail = 'An error occurred while generating the image. Please try again'
 
 
-class ChangingVisibilityImageException(CustomHTTPException):
+class NoAccessToImageException(CustomHTTPException):
     status_code = status.HTTP_400_BAD_REQUEST
-    detail = 'Failed to change image visibility'
+    detail = 'You dont have access to this image'
 
 
 class PlacingLikeException(CustomHTTPException):

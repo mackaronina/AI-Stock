@@ -8,7 +8,8 @@ from jwt import InvalidTokenError
 from app.config import SETTINGS
 from app.dao.dao import UserDAO, ImageDAO
 from app.database import User, Image
-from app.exceptions import UserNotLoggedInException, ImageNotFoundException, UserNotFoundException
+from app.exceptions import UserNotLoggedInException, ImageNotFoundException, UserNotFoundException, \
+    NoAccessToImageException
 
 
 async def get_current_user(request: Request) -> User:
@@ -46,7 +47,7 @@ async def get_image_by_id(image_id: uuid.UUID, current_user: OptionalCurrentUser
     if not image:
         raise ImageNotFoundException()
     if not image.is_public and (current_user is None or current_user.id != image.author_id):
-        raise ImageNotFoundException()
+        raise NoAccessToImageException()
     return image
 
 

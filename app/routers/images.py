@@ -5,7 +5,7 @@ from fastapi.templating import Jinja2Templates
 
 from app.dao.dao import ImageDAO
 from app.dependencies import CurrentUser, ImageById, OptionalCurrentUser
-from app.exceptions import GeneratingImageException, ChangingVisibilityImageException
+from app.exceptions import GeneratingImageException, NoAccessToImageException
 from app.schemas import RequestGenerateImage
 from app.utils.api_calls.cloudflare import generate_image_from_prompt, generate_tags_for_image
 from app.utils.api_calls.imdb import upload_image_to_imdb
@@ -45,9 +45,17 @@ async def get_image_page(image: ImageById, current_user: OptionalCurrentUser, re
                                       context={'current_user': current_user, 'image': image})
 
 
+@router.delete('/delete/{image_id}')
+async def delete_image(image: ImageById, current_user: CurrentUser) -> dict:
+    if image.author_id != current_user.id:
+        raise NoAccessToImageException()
+    await ImageDAO.delete_one_by_id(image.id)
+    return {'message': 'successfully deleted image'}
+
+
 @router.patch('/visibility/{image_id}')
 async def change_image_visibility(image: ImageById, current_user: CurrentUser) -> dict:
     if image.author_id != current_user.id:
-        raise ChangingVisibilityImageException()
+        raise NoAccessToImageException()
     await ImageDAO.update_one_by_id(image.id, is_public=not image.is_public)
     return {'message': 'successfully changed image visibility'}
