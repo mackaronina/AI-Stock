@@ -49,3 +49,8 @@ class CredentialsException(CustomHTTPException):
 class GeneratingImageException(CustomHTTPException):
     status_code = status.HTTP_503_SERVICE_UNAVAILABLE
     detail = 'An error occurred while generating the image. Please try again'
+
+
+class PlacingLikeException(CustomHTTPException):
+    status_code = status.HTTP_400_BAD_REQUEST
+    detail = 'This image cannot be liked'

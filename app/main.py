@@ -7,7 +7,7 @@ from fastapi import FastAPI
 from app.config import SETTINGS
 from app.database import create_tables
 from app.exception_handlers import init_exception_handlers
-from app.routers import home, images, users
+from app.routers import home, images, users, likes
 
 
 async def main() -> None:
@@ -16,7 +16,8 @@ async def main() -> None:
     app.include_router(home.router)
     app.include_router(images.router)
     app.include_router(users.router)
-
+    app.include_router(likes.router)
+    
     init_exception_handlers(app)
 
     logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
