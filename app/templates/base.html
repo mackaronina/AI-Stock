@@ -38,10 +38,10 @@
     <a href="{{ url_for('get_all_images_page') }}">Explore</a>
     <a href="{{ url_for('create_image_page') }}">Create</a>
     {% if current_user %}
-    <a href="{{ url_for('get_me_page') }}">Profile</a>
+        <a href="{{ url_for('get_me_page') }}">Profile</a>
     {% else %}
-    <a href="{{ url_for('login_user_page') }}">Log in</a>
-    <a href="{{ url_for('register_user_page') }}">Sign up</a>
+        <a href="{{ url_for('login_user_page') }}">Log in</a>
+        <a href="{{ url_for('register_user_page') }}">Sign up</a>
     {% endif %}
 </header>
 <p id="error_text"></p>

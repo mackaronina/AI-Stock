@@ -1,48 +1,48 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>Registration</h1>
-<label for="username">Username</label>
-<input type="text" id="username" name="username">
-<label for="email">Email</label>
-<input type="email" id="email" name="email">
-<label for="password">Password</label>
-<input type="password" id="password" name="password">
-<label for="confirm_password">Confirm password</label>
-<input type="password" id="confirm_password" name="confirm_password">
-<button id="signup_button">Sign up</button>
-<script>
-    const username = document.getElementById("username");
-    const email = document.getElementById("email");
-    const password = document.getElementById("password");
-    const confirm_password = document.getElementById("confirm_password");
-    const button = document.getElementById("signup_button");
-    button.addEventListener("click", async () => {
-        const body = JSON.stringify({
-            username: username.value,
-            email: email.value,
-            password: password.value,
-            confirm_password: confirm_password.value
-        });
-        const response = await fetch("{{ url_for('register_user') }}", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: body
-        });
-        if (response.ok) {
-            await fetch("{{ url_for('login_user') }}", {
+    <h1>Registration</h1>
+    <label for="username">Username</label>
+    <input type="text" id="username" name="username">
+    <label for="email">Email</label>
+    <input type="email" id="email" name="email">
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password">
+    <label for="confirm_password">Confirm password</label>
+    <input type="password" id="confirm_password" name="confirm_password">
+    <button id="signup_button">Sign up</button>
+    <script>
+        const username = document.getElementById("username");
+        const email = document.getElementById("email");
+        const password = document.getElementById("password");
+        const confirm_password = document.getElementById("confirm_password");
+        const button = document.getElementById("signup_button");
+        button.addEventListener("click", async () => {
+            const body = JSON.stringify({
+                username: username.value,
+                email: email.value,
+                password: password.value,
+                confirm_password: confirm_password.value
+            });
+            const response = await fetch("{{ url_for('register_user') }}", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: body
             });
-            redirect_to("{{ url_for('home_page') }}");
-        } else {
-            const result = await response.json();
-            set_error_text(result.detail);
-        }
-    });
-</script>
+            if (response.ok) {
+                await fetch("{{ url_for('login_user') }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: body
+                });
+                redirect_to("{{ url_for('home_page') }}");
+            } else {
+                const result = await response.json();
+                set_error_text(result.detail);
+            }
+        });
+    </script>
 {% endblock %}

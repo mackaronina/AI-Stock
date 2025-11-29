@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>User info</h1>
-<p>Username: {{ user.username }}</p>
-<p>Registered at: {{ user.created_at.strftime('%d.%m.%Y') }}</p>
-<h1>Images</h1>
-{% for image in user.images if image.is_public %}
-<a href="{{ url_for('get_image_page', image_id=image.id) }}">
-    <img src="{{ image.url }}" height="256" width="192" alt="Loading...">
-</a>
-{% else %}
-<p>Nothing found</p>
-{% endfor %}
+    <h1>User info</h1>
+    <p>Username: {{ user.username }}</p>
+    <p>Registered at: {{ user.created_at.strftime('%d.%m.%Y') }}</p>
+    <h1>Images</h1>
+    {% for image in user.images if image.is_public %}
+        <a href="{{ url_for('get_image_page', image_id=image.id) }}">
+            <img src="{{ image.url }}" height="256" width="192" alt="Loading...">
+        </a>
+    {% else %}
+        <p>Nothing found</p>
+    {% endfor %}
 {% endblock %}

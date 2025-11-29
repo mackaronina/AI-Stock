@@ -1,30 +1,30 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>Your profile</h1>
-<p>Username: {{ current_user.username }}</p>
-<p>Email: {{ current_user.email }}</p>
-<p>Registered at {{ current_user.created_at.strftime('%d.%m.%Y') }}</p>
-<button id="logout_button">Log out</button>
-<button id="delete_button">Delete account</button>
-<h2>Images</h2>
-{% for image in current_user.images %}
-<a href="{{ url_for('get_image_page', image_id=image.id) }}">
-    <img src="{{ image.url }}" height="256" width="192" alt="Loading...">
-</a>
-{% else %}
-<p>Nothing found</p>
-{% endfor %}
-<script>
-    const logoutButton = document.getElementById("logout_button");
-    logoutButton.addEventListener("click", async () => {
-        await fetch("{{ url_for('logout_user') }}", {method: "POST"});
-        redirect_to("{{ url_for('home_page') }}");
-    });
+    <h1>Your profile</h1>
+    <p>Username: {{ current_user.username }}</p>
+    <p>Email: {{ current_user.email }}</p>
+    <p>Registered at {{ current_user.created_at.strftime('%d.%m.%Y') }}</p>
+    <button id="logout_button">Log out</button>
+    <button id="delete_button">Delete account</button>
+    <h2>Images</h2>
+    {% for image in current_user.images %}
+        <a href="{{ url_for('get_image_page', image_id=image.id) }}">
+            <img src="{{ image.url }}" height="256" width="192" alt="Loading...">
+        </a>
+    {% else %}
+        <p>Nothing found</p>
+    {% endfor %}
+    <script>
+        const logoutButton = document.getElementById("logout_button");
+        logoutButton.addEventListener("click", async () => {
+            await fetch("{{ url_for('logout_user') }}", {method: "POST"});
+            redirect_to("{{ url_for('home_page') }}");
+        });
 
-    const deleteButton = document.getElementById("delete_button");
-    deleteButton.addEventListener("click", async () => {
-        await fetch("{{ url_for('delete_user') }}", {method: "DELETE"});
-        redirect_to("{{ url_for('home_page') }}");
-    });
-</script>
+        const deleteButton = document.getElementById("delete_button");
+        deleteButton.addEventListener("click", async () => {
+            await fetch("{{ url_for('delete_user') }}", {method: "DELETE"});
+            redirect_to("{{ url_for('home_page') }}");
+        });
+    </script>
 {% endblock %}
