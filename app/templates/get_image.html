@@ -8,33 +8,55 @@
     <p>Created at {{ image.created_at.strftime('%d.%m.%Y') }}</p>
     <p>by <a href="{{ url_for('get_user_page', user_id=image.author_id) }}">{{ image.author.username }}</a></p>
     {% if image.is_public %}
+        {% if not like %}
+            <button id="place_like_button">Like {{ image.likes | length }}</button>
+        {% else %}
+            <button id="delete_like_button">Liked {{ image.likes | length }}</button>
+        {% endif %}
         {% if current_user and current_user.id==image.author_id %}
             <button id="visibility_button">Make private</button>
             <button id="delete_button">Delete image</button>
-        {% endif %}
-        {% if not like %}
-            <p>Like {{ image.likes | length }}</p>
-        {% else %}
-            <p>Liked {{ image.likes | length }}</p>
         {% endif %}
     {% else %}
         <button id="visibility_button">Make public</button>
         <button id="delete_button">Delete image</button>
     {% endif %}
     <script>
-        const visibilityButton = document.getElementById("visibility_button");
-        const deleteButton = document.getElementById("delete_button");
-        if (visibilityButton) {
+        {% if current_user and current_user.id==image.author_id %}
+            const visibilityButton = document.getElementById("visibility_button");
             visibilityButton.addEventListener("click", async () => {
                 await fetch("{{ url_for('change_image_visibility', image_id=image.id) }}", {method: "PATCH"});
                 refresh_page();
             });
-        }
-        if (deleteButton) {
+            const deleteButton = document.getElementById("delete_button");
             deleteButton.addEventListener("click", async () => {
                 await fetch("{{ url_for('delete_image', image_id=image.id) }}", {method: "DELETE"});
                 redirect_to("{{ url_for('get_me_page') }}");
             });
-        }
+        {% endif %}
+        {% if like %}
+            const deleteLikeButton = document.getElementById("delete_like_button");
+            deleteLikeButton.addEventListener("click", async () => {
+                const response = await fetch("{{ url_for('delete_like', like_id=like.id) }}", {method: "DELETE"});
+                if (response.ok)
+                    refresh_page();
+            });
+        {% else %}
+            const placeLikeButton = document.getElementById("place_like_button");
+            placeLikeButton.addEventListener("click", async () => {
+                const body = JSON.stringify({
+                    to_image_id: "{{ image.id }}"
+                });
+                const response = await fetch("{{ url_for('place_like') }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: body
+                });
+                if (response.ok)
+                    refresh_page();
+            });
+        {% endif %}
     </script>
 {% endblock %}

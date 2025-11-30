@@ -23,7 +23,7 @@ class UserNotLoggedInException(CustomHTTPException):
 
 class ImageNotFoundException(CustomHTTPException):
     status_code = status.HTTP_404_NOT_FOUND
-    detail = 'This image does not exist or is private.'
+    detail = 'This image does not exist'
 
 
 class UserNotFoundException(CustomHTTPException):
@@ -58,4 +58,19 @@ class NoAccessToImageException(CustomHTTPException):
 
 class PlacingLikeException(CustomHTTPException):
     status_code = status.HTTP_400_BAD_REQUEST
-    detail = 'This image cannot be liked'
+    detail = 'This image cannot be liked by you'
+
+
+class LikeAlreadyPlacedException(CustomHTTPException):
+    status_code = status.HTTP_400_BAD_REQUEST
+    detail = 'This image has already been liked'
+
+
+class NoAccessToLikeException(CustomHTTPException):
+    status_code = status.HTTP_400_BAD_REQUEST
+    detail = "This like wasn't left by you"
+
+
+class LikeNotFoundException(CustomHTTPException):
+    status_code = status.HTTP_404_NOT_FOUND
+    detail = 'This like does not exist'
