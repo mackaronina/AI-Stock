@@ -1,10 +1,14 @@
 import uuid
-from typing import Self
+from typing import Self, Literal
 
 from pydantic import BaseModel, EmailStr, Field, model_validator
 
 
 # Field description is the message that will appear when a validation error occurs
+class RequestSearchQuery(BaseModel):
+    sort_by: Literal['date', 'likes'] = 'likes'
+    order_by: Literal['asc', 'desc'] = 'desc'
+
 
 class RequestGenerateImage(BaseModel):
     prompt: str = Field(min_length=3, max_length=200, description='Prompt must be between 3 and 200 characters long')

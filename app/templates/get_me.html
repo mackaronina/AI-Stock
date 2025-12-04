@@ -8,9 +8,13 @@
     <button id="delete_button">Delete account</button>
     <h2>Images</h2>
     {% for image in current_user.images %}
-        <a href="{{ url_for('get_image_page', image_id=image.id) }}">
-            <img src="{{ image.url }}" height="256" width="192" alt="Loading...">
-        </a>
+        <div>
+            <a href="{{ url_for('get_image_page', image_id=image.id) }}">
+                <img src="{{ image.url }}" height="256" width="192" alt="Loading...">
+            </a>
+            <p>Likes {{ image.likes | length }}</p>
+            <p>Created at {{ image.created_at.strftime('%d.%m.%Y') }}</p>
+        </div>
     {% else %}
         <p>Nothing found</p>
     {% endfor %}

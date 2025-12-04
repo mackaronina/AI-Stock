@@ -5,9 +5,13 @@
     <p>Registered at: {{ user.created_at.strftime('%d.%m.%Y') }}</p>
     <h1>Images</h1>
     {% for image in user.images if image.is_public %}
-        <a href="{{ url_for('get_image_page', image_id=image.id) }}">
-            <img src="{{ image.url }}" height="256" width="192" alt="Loading...">
-        </a>
+        <div>
+            <a href="{{ url_for('get_image_page', image_id=image.id) }}">
+                <img src="{{ image.url }}" height="256" width="192" alt="Loading...">
+            </a>
+            <p>Likes {{ image.likes | length }}</p>
+            <p>Created at {{ image.created_at.strftime('%d.%m.%Y') }}</p>
+        </div>
     {% else %}
         <p>Nothing found</p>
     {% endfor %}

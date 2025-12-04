@@ -1,4 +1,6 @@
-from fastapi import APIRouter
+from typing import Annotated
+
+from fastapi import APIRouter, Query
 from fastapi import Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
@@ -6,7 +8,7 @@ from fastapi.templating import Jinja2Templates
 from app.dao.dao import ImageDAO
 from app.dependencies import CurrentUser, ImageById, OptionalCurrentUser, LikeByImage
 from app.exceptions import GeneratingImageException, NoAccessToImageException
-from app.schemas import RequestGenerateImage
+from app.schemas import RequestGenerateImage, RequestSearchQuery
 from app.utils.api_calls.cloudflare import generate_image_from_prompt, generate_tags_for_image
 from app.utils.api_calls.imdb import upload_image_to_imdb
 
@@ -33,10 +35,13 @@ async def create_image(current_user: CurrentUser, generate_data: RequestGenerate
 
 
 @router.get('/')
-async def get_all_images_page(current_user: OptionalCurrentUser, request: Request) -> HTMLResponse:
-    images = await ImageDAO.find_all()
+async def get_all_images_page(current_user: OptionalCurrentUser, search_query: Annotated[RequestSearchQuery, Query()],
+                              request: Request) -> HTMLResponse:
+    images = await ImageDAO.find_all_with_sort(sort_by=search_query.sort_by, order_by=search_query.order_by,
+                                               is_public=True)
     return templates.TemplateResponse(request=request, name='get_all_images.html',
-                                      context={'current_user': current_user, 'images': images})
+                                      context={'current_user': current_user, 'images': images,
+                                               'search_query': search_query})
 
 
 @router.get('/{image_id}')
