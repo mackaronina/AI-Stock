@@ -1,8 +1,13 @@
 import logging
 
 from curl_cffi.requests import AsyncSession
+from pydantic import BaseModel, Field
 
 from app.config import SETTINGS
+
+
+class TagsResponseFormat(BaseModel):
+    tags: list[str] = Field(min_length=1, max_length=10)
 
 
 async def generate_image_from_prompt(prompt: str) -> str:
@@ -33,7 +38,8 @@ async def generate_tags_for_image(img_data: str) -> list[str]:
         'messages': [
             {
                 'role': 'system',
-                'content': 'Generate a list of tags for the image. The list must contain 1 to 10 tags. Each tag must begin with #'
+                'content': f'Generate a list of tags for the image. The list must contain 1 to 10 tags. Each tag must \
+                begin with #'
             },
             {
                 'role': 'user',
@@ -47,27 +53,12 @@ async def generate_tags_for_image(img_data: str) -> list[str]:
                 ]
             }
         ],
-        'response_format': {
-            'type': 'json_schema',
-            'json_schema': {
-                'type': 'object',
-                'properties': {
-                    'tags': {
-                        'type': 'array',
-                        'items': {
-                            'type': 'string'
-                        }
-                    }
-                },
-                'required': [
-                    'tags'
-                ]
-            }
-        }
+        'guided_json': TagsResponseFormat.model_json_schema()
     }
     async with AsyncSession() as session:
         resp = await session.post(link, json=data, headers=headers, impersonate='chrome110',
                                   timeout=SETTINGS.CLOUDFLARE.REQUEST_TIMEOUT_SECONDS)
+        print(resp.json())
         tags = resp.json()['result']['response']['tags']
         tags = [tag.lower().replace(' ', '_').replace('-', '_') for tag in tags]
         return tags
