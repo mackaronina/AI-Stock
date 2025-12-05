@@ -22,6 +22,12 @@
                 <option value="asc" selected>Ascending</option>
             {% endif %}
         </select>
+        {% if search_query.term %}
+            <input type="search" id="term" name="term" value="{{ search_query.term }}"
+                   placeholder="Enter your search term...">
+        {% else %}
+            <input type="search" id="term" name="term" placeholder="Enter your search term...">
+        {% endif %}
         <input type="submit" value="Search">
     </form>
     {% for image in images if image.is_public %}
