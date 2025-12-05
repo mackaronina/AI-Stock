@@ -21,7 +21,10 @@ class ImageDAO(BaseDAO[Image]):
                                     **filter_by) -> Sequence[Image]:
         query = select(Image).filter_by(**filter_by)
         if term is not None:
-            query = query.where(Image.prompt.contains(term))
+            if term.startswith('#'):
+                query = query.where(Image.tags.contains(term))
+            else:
+                query = query.where(Image.prompt.contains(term))
         if sort_by == 'date':
             if order_by == 'desc':
                 query = query.order_by(desc(Image.created_at))

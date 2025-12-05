@@ -4,7 +4,9 @@
     <p>{{ image.prompt }}</p>
     <img src="{{ image.url }}" height="512" width="384" alt="Loading">
     <a href="{{ image.url }}" download="image.jpg">Download</a>
-    <p>{{ image.tags | join(' ') }}</p>
+    {% for tag in image.tags %}
+        <a href="{{ url_for('get_all_images_page').include_query_params(term=tag) }}">{{ tag }} </a>
+    {% endfor %}
     <p>Created at {{ image.created_at.strftime('%d.%m.%Y') }}</p>
     <p>by <a href="{{ url_for('get_user_page', user_id=image.author_id) }}">{{ image.author.username }}</a></p>
     {% if image.is_public %}
