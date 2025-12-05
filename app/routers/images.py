@@ -10,7 +10,7 @@ from app.dependencies import CurrentUser, ImageById, OptionalCurrentUser, LikeBy
 from app.exceptions import GeneratingImageException, NoAccessToImageException
 from app.schemas import RequestGenerateImage, RequestSearchQuery
 from app.utils.api_calls.cloudflare import generate_image_from_prompt, generate_tags_for_image
-from app.utils.api_calls.imdb import upload_image_to_imdb
+from app.utils.api_calls.imgbb import upload_image_to_imgbb
 
 router = APIRouter(prefix='/images')
 templates = Jinja2Templates(directory='templates')
@@ -27,7 +27,7 @@ async def create_image(current_user: CurrentUser, generate_data: RequestGenerate
     try:
         img_data = await generate_image_from_prompt(generate_data.prompt)
         tags = await generate_tags_for_image(img_data)
-        image_url = await upload_image_to_imdb(img_data)
+        image_url = await upload_image_to_imgbb(img_data)
         image = await ImageDAO.add(url=image_url, prompt=generate_data.prompt, tags=tags, author_id=current_user.id)
         return {'image_url': str(request.url_for('get_image_page', image_id=str(image.id)))}
     except:

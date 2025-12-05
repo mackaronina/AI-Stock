@@ -7,9 +7,9 @@ from curl_cffi.requests import AsyncSession
 from app.config import SETTINGS
 
 
-async def upload_image_to_imdb(img_data: str) -> str:
-    logging.info('Uploading image to imdb')
-    link = f'https://api.imgbb.com/1/upload?key={SETTINGS.IMDB.API_KEY.get_secret_value()}'
+async def upload_image_to_imgbb(img_data: str) -> str:
+    logging.info('Uploading image to imgbb')
+    link = f'https://api.imgbb.com/1/upload?key={SETTINGS.IMGBB.API_KEY.get_secret_value()}'
     multipart = CurlMime()
     multipart.addpart(
         name='image',
@@ -19,6 +19,6 @@ async def upload_image_to_imdb(img_data: str) -> str:
     )
     async with AsyncSession() as session:
         resp = await session.post(link, multipart=multipart, impersonate='chrome110',
-                                  timeout=SETTINGS.IMDB.REQUEST_TIMEOUT_SECONDS)
+                                  timeout=SETTINGS.IMGBB.REQUEST_TIMEOUT_SECONDS)
         image_url = resp.json()['data']['url']
         return image_url

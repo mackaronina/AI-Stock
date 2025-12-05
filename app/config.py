@@ -7,8 +7,8 @@ class ConfigBase(BaseSettings):
                                       case_sensitive=False)
 
 
-class ImdbSettings(ConfigBase):
-    model_config = SettingsConfigDict(env_prefix='IMDB_')
+class ImgbbSettings(ConfigBase):
+    model_config = SettingsConfigDict(env_prefix='IMGBB_')
     API_KEY: SecretStr
     REQUEST_TIMEOUT_SECONDS: int = 60
 
@@ -33,7 +33,7 @@ class AuthSettings(ConfigBase):
 
 
 class Settings(ConfigBase):
-    IMDB: ImdbSettings = Field(default_factory=ImdbSettings)
+    IMGBB: ImgbbSettings = Field(default_factory=ImgbbSettings)
     CLOUDFLARE: CloudflareSettings = Field(default_factory=CloudflareSettings)
     AUTH: AuthSettings = Field(default_factory=AuthSettings)
     HOST: str = '127.0.0.1'
