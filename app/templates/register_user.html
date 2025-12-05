@@ -38,10 +38,10 @@
                     },
                     body: body
                 });
-                redirect_to("{{ url_for('home_page') }}");
+                redirectTo("{{ url_for('home_page') }}");
             } else {
                 const result = await response.json();
-                set_error_text(result.detail);
+                showErrorText(result.detail);
             }
         });
     </script>

@@ -32,10 +32,10 @@
             });
             if (response.ok) {
                 const result = await response.json();
-                redirect_to(result.image_url);
+                redirectTo(result.image_url);
             } else {
                 const result = await response.json();
-                set_error_text(result.detail);
+                showErrorText(result.detail);
                 enableButton();
             }
         });

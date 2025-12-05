@@ -28,12 +28,12 @@
             const visibilityButton = document.getElementById("visibility_button");
             visibilityButton.addEventListener("click", async () => {
                 await fetch("{{ url_for('change_image_visibility', image_id=image.id) }}", {method: "PATCH"});
-                refresh_page();
+                refreshPage();
             });
             const deleteButton = document.getElementById("delete_button");
             deleteButton.addEventListener("click", async () => {
                 await fetch("{{ url_for('delete_image', image_id=image.id) }}", {method: "DELETE"});
-                redirect_to("{{ url_for('get_me_page') }}");
+                redirectTo("{{ url_for('get_me_page') }}");
             });
         {% endif %}
         {% if like %}
@@ -41,7 +41,7 @@
             deleteLikeButton.addEventListener("click", async () => {
                 const response = await fetch("{{ url_for('delete_like', like_id=like.id) }}", {method: "DELETE"});
                 if (response.ok)
-                    refresh_page();
+                    refreshPage();
             });
         {% else %}
             const placeLikeButton = document.getElementById("place_like_button");
@@ -57,7 +57,7 @@
                     body: body
                 });
                 if (response.ok)
-                    refresh_page();
+                    refreshPage();
             });
         {% endif %}
     </script>

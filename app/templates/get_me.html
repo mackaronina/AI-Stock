@@ -22,13 +22,13 @@
         const logoutButton = document.getElementById("logout_button");
         logoutButton.addEventListener("click", async () => {
             await fetch("{{ url_for('logout_user') }}", {method: "POST"});
-            redirect_to("{{ url_for('home_page') }}");
+            redirectTo("{{ url_for('home_page') }}");
         });
 
         const deleteButton = document.getElementById("delete_button");
         deleteButton.addEventListener("click", async () => {
             await fetch("{{ url_for('delete_user') }}", {method: "DELETE"});
-            redirect_to("{{ url_for('home_page') }}");
+            redirectTo("{{ url_for('home_page') }}");
         });
     </script>
 {% endblock %}
