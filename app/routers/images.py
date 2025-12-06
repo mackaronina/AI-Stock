@@ -26,7 +26,7 @@ async def create_image_page(current_user: CurrentUser, request: Request) -> HTML
 async def create_image(current_user: CurrentUser, generate_data: RequestGenerateImage, request: Request) -> dict:
     try:
         img_data = await generate_image_from_prompt(generate_data.prompt)
-        tags = await generate_tags_for_image(img_data)
+        tags = await generate_tags_for_image(img_data, generate_data.prompt)
         image_url = await upload_image_to_imgbb(img_data)
         image = await ImageDAO.add(url=image_url, prompt=generate_data.prompt, tags=tags, author_id=current_user.id)
         return {'image_url': str(request.url_for('get_image_page', image_id=str(image.id)))}
