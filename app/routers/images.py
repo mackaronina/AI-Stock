@@ -1,3 +1,4 @@
+import logging
 from typing import Annotated
 
 from fastapi import APIRouter, Query
@@ -29,8 +30,10 @@ async def create_image(current_user: CurrentUser, generate_data: RequestGenerate
         tags = await generate_tags_for_image(img_data, generate_data.prompt)
         image_url = await upload_image_to_imgbb(img_data)
         image = await ImageDAO.add(url=image_url, prompt=generate_data.prompt, tags=tags, author_id=current_user.id)
+        logging.info(f'Created image with id {image.id}')
         return {'image_url': str(request.url_for('get_image_page', image_id=str(image.id)))}
-    except:
+    except Exception as e:
+        logging.error(f'Error while generating image: {e}', exc_info=True)
         raise GeneratingImageException()
 
 
@@ -56,6 +59,7 @@ async def delete_image(image: ImageById, current_user: CurrentUser) -> dict:
     if image.author_id != current_user.id:
         raise NoAccessToImageException()
     await ImageDAO.delete_one_by_id(image.id)
+    logging.info(f'Deleted image with id {image.id}')
     return {'message': 'successfully deleted image'}
 
 
@@ -64,4 +68,5 @@ async def change_image_visibility(image: ImageById, current_user: CurrentUser) -
     if image.author_id != current_user.id:
         raise NoAccessToImageException()
     await ImageDAO.update_one_by_id(image.id, is_public=not image.is_public)
+    logging.info(f'Changed visibility of image with id {image.id}. is_public = {not image.is_public}')
     return {'message': 'successfully changed image visibility'}

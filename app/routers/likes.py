@@ -1,3 +1,5 @@
+import logging
+
 from fastapi import APIRouter
 
 from app.dao.dao import LikeDAO
@@ -15,7 +17,9 @@ async def place_like(image: ImageById, like_data: RequestPlaceLike, current_user
     like = await LikeDAO.find_one_or_none(from_user_id=current_user.id, to_image_id=like_data.to_image_id)
     if like is not None:
         raise LikeAlreadyPlacedException()
-    await LikeDAO.add(from_user_id=current_user.id, to_image_id=like_data.to_image_id)
+    like = await LikeDAO.add(from_user_id=current_user.id, to_image_id=like_data.to_image_id)
+    logging.info(
+        f'Placed like with id {like.id} by user with id {like.from_user_id} on image with id {like.to_image_id}')
     return {'message': 'successfully placed like'}
 
 
@@ -24,4 +28,6 @@ async def delete_like(like: LikeById, current_user: CurrentUser) -> dict:
     if like.from_user_id != current_user.id:
         raise NoAccessToLikeException()
     await LikeDAO.delete_one_by_id(like.id)
+    logging.info(
+        f'Deleted like with id {like.id} by user with id {like.from_user_id} on image with id {like.to_image_id}')
     return {'message': 'successfully deleted like'}

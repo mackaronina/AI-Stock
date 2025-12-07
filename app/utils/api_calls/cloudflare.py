@@ -59,7 +59,6 @@ async def generate_tags_for_image(img_data: str, prompt: str) -> list[str]:
     async with AsyncSession() as session:
         resp = await session.post(link, json=data, headers=headers, impersonate='chrome110',
                                   timeout=SETTINGS.CLOUDFLARE.REQUEST_TIMEOUT_SECONDS)
-        print(resp.json())
         tags = resp.json()['result']['response']['tags']
         tags = [tag.lower().replace(' ', '_').replace('-', '_') for tag in tags]
         return tags

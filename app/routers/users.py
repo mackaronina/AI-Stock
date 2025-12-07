@@ -1,3 +1,5 @@
+import logging
+
 from fastapi import Response, APIRouter, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
@@ -18,6 +20,7 @@ async def login_user(login_data: RequestLogin, response: Response) -> dict:
     user = await authenticate_user(login_data.username, login_data.password)
     access_token = create_access_token(user)
     response.set_cookie(key=SETTINGS.AUTH.COOKIE_NAME, value=access_token)
+    logging.info(f'Logged in user with id {user.id}')
     return {'message': 'successfully logged in'}
 
 
@@ -38,8 +41,9 @@ async def register_user(register_data: RequestRegister) -> dict:
         raise UsernameTakenException()
     if await UserDAO.find_one_or_none(email=register_data.email):
         raise EmailTakenException()
-    await UserDAO.add(username=register_data.username, email=register_data.email,
-                      hashed_password=get_password_hash(register_data.password))
+    user = await UserDAO.add(username=register_data.username, email=register_data.email,
+                             hashed_password=get_password_hash(register_data.password))
+    logging.info(f'Registered user with id {user.id}')
     return {'message': 'successfully registered new user'}
 
 
@@ -52,6 +56,7 @@ async def register_user_page(current_user: OptionalCurrentUser, request: Request
 @router.delete('/delete')
 async def delete_user(current_user: CurrentUser) -> dict:
     await UserDAO.delete_one_by_id(current_user.id)
+    logging.info(f'Deleted user with id {current_user.id}')
     return {'message': 'successfully deleted user'}
 
 
