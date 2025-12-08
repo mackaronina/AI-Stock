@@ -12,6 +12,8 @@ class Base(BaseModel):
 def validate_search_term(value: str | None) -> str | None:
     if value is None:
         return None
+    if value == 'None':
+        return None
     if 3 <= len(value) <= 300:
         return value
     return None
@@ -21,6 +23,8 @@ class RequestSearchQuery(Base):
     sort_by: Literal['date', 'likes'] = 'likes'
     order_by: Literal['asc', 'desc'] = 'desc'
     term: Annotated[str | None, AfterValidator(validate_search_term)] = None
+    page: int = Field(default=1, ge=1)
+    page_size: int = Field(default=9, ge=1, le=100)
 
 
 class RequestGenerateImage(Base):

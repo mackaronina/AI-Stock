@@ -40,11 +40,13 @@ async def create_image(current_user: CurrentUser, generate_data: RequestGenerate
 @router.get('/')
 async def get_all_images_page(current_user: OptionalCurrentUser, search_query: Annotated[RequestSearchQuery, Query()],
                               request: Request) -> HTMLResponse:
-    images = await ImageDAO.find_all_with_filters(sort_by=search_query.sort_by, order_by=search_query.order_by,
-                                                  term=search_query.term, is_public=True)
+    images, total_pages = await ImageDAO.find_all_with_filters(sort_by=search_query.sort_by,
+                                                               order_by=search_query.order_by,
+                                                               term=search_query.term, page=search_query.page,
+                                                               page_size=search_query.page_size, is_public=True)
     return templates.TemplateResponse(request=request, name='get_all_images.html',
                                       context={'current_user': current_user, 'images': images,
-                                               'search_query': search_query})
+                                               'search_query': search_query, 'total_pages': total_pages})
 
 
 @router.get('/{image_id}')

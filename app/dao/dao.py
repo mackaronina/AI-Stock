@@ -17,8 +17,8 @@ class ImageDAO(BaseDAO[Image]):
     @classmethod
     @connection
     async def find_all_with_filters(cls, session: AsyncSession, sort_by: Literal['date', 'likes'] = 'likes',
-                                    order_by: Literal['asc', 'desc'] = 'desc', term: str = None,
-                                    **filter_by) -> Sequence[Image]:
+                                    order_by: Literal['asc', 'desc'] = 'desc', term: str = None, page: int = 1,
+                                    page_size: int = 9, **filter_by) -> tuple[Sequence[Image], int]:
         query = select(Image).filter_by(**filter_by)
         if term is not None:
             if term.startswith('#'):
@@ -37,9 +37,14 @@ class ImageDAO(BaseDAO[Image]):
             else:
                 query = query.filter_by(**filter_by).outerjoin(Like).group_by(Image.id).order_by(
                     asc(func.count(Like.id)))
-        result = await session.execute(query)
+        count_query = select(func.count()).select_from(query.subquery())
+        total_results = await session.scalar(count_query)
+        total_pages = (total_results + page_size - 1) // page_size
+        offset = (page - 1) * page_size
+        paginated_query = query.offset(offset).limit(page_size)
+        result = await session.execute(paginated_query)
         records = result.scalars().all()
-        return records
+        return records, total_pages
 
 
 class LikeDAO(BaseDAO[Like]):
