@@ -46,18 +46,22 @@
         {% else %}
             const placeLikeButton = document.getElementById("place_like_button");
             placeLikeButton.addEventListener("click", async () => {
-                const body = JSON.stringify({
-                    to_image_id: "{{ image.id }}"
-                });
-                const response = await fetch("{{ url_for('place_like') }}", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: body
-                });
-                if (response.ok)
-                    refreshPage();
+                {% if current_user %}
+                    const body = JSON.stringify({
+                        to_image_id: "{{ image.id }}"
+                    });
+                    const response = await fetch("{{ url_for('place_like') }}", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: body
+                    });
+                    if (response.ok)
+                        refreshPage();
+                {% else %}
+                    redirectTo("{{ url_for('login_user_page') }}")
+                {% endif %}
             });
         {% endif %}
     </script>
