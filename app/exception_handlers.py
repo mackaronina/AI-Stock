@@ -32,5 +32,12 @@ def init_exception_handlers(app: FastAPI) -> None:
         )
 
     @app.exception_handler(UserNotLoggedInException)
-    async def not_logged_exception_handler(request: Request, exc: UserNotLoggedInException) -> RedirectResponse:
-        return RedirectResponse(request.url_for('login_user_page'))
+    async def not_logged_exception_handler(request: Request,
+                                           exc: UserNotLoggedInException) -> RedirectResponse | JSONResponse:
+        if request.method == 'GET':
+            return RedirectResponse(request.url_for('login_user_page'))
+        else:
+            return JSONResponse(
+                status_code=exc.status_code,
+                content={'detail': exc.detail}
+            )

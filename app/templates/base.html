@@ -32,6 +32,15 @@
     function refreshPage() {
         window.location.reload();
     }
+
+    {% if not current_user %}
+        fetch("{{ url_for('refresh_tokens') }}", {
+            method: "POST",
+        }).then(response => {
+            if (response.ok)
+                refreshPage();
+        });
+    {% endif %}
 </script>
 <header>
     <a href="{{ url_for('home_page') }}">Home</a>

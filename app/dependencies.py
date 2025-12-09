@@ -1,7 +1,7 @@
 import uuid
 from typing import Annotated
 
-from fastapi import Depends, HTTPException, Request, Response
+from fastapi import Depends, HTTPException, Request
 from jwt import InvalidTokenError
 
 from app.dao.dao import UserDAO, ImageDAO, LikeDAO
@@ -9,31 +9,36 @@ from app.database import User, Image, Like
 from app.exceptions import UserNotLoggedInException, ImageNotFoundException, UserNotFoundException, \
     NoAccessToImageException, LikeNotFoundException
 from app.schemas import RequestPlaceLike
-from app.utils.auth import set_access_token, get_access_token, get_refresh_token, get_user_by_token
+from app.utils.auth import get_access_token, get_refresh_token, get_user_by_token
 
 
-async def get_current_user(request: Request, response: Response) -> User:
+async def get_current_user_by_refresh_token(request: Request) -> User:
+    try:
+        refresh_token = get_refresh_token(request)
+        user = await get_user_by_token(refresh_token, 'refresh')
+        return user
+    except (InvalidTokenError, UserNotFoundException, ValueError, KeyError):
+        raise UserNotLoggedInException()
+
+
+CurrentUserRefresh = Annotated[User, Depends(get_current_user_by_refresh_token)]
+
+
+async def get_current_user(request: Request) -> User:
     try:
         access_token = get_access_token(request)
         user = await get_user_by_token(access_token, 'access')
         return user
     except (InvalidTokenError, UserNotFoundException, ValueError, KeyError):
-        try:
-            # Use a refresh token to update the access token
-            refresh_token = get_refresh_token(request)
-            user = await get_user_by_token(refresh_token, 'refresh')
-            set_access_token(user, response)
-            return user
-        except (InvalidTokenError, UserNotFoundException, ValueError, KeyError):
-            raise UserNotLoggedInException()
+        raise UserNotLoggedInException()
 
 
 CurrentUser = Annotated[User, Depends(get_current_user)]
 
 
-async def get_current_user_or_none(request: Request, response: Response) -> User | None:
+async def get_current_user_or_none(request: Request) -> User | None:
     try:
-        return await get_current_user(request, response)
+        return await get_current_user(request)
     except HTTPException:
         return None
 

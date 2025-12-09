@@ -5,7 +5,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 
 from app.dao.dao import UserDAO
-from app.dependencies import CurrentUser, OptionalCurrentUser, UserById
+from app.dependencies import CurrentUser, OptionalCurrentUser, UserById, CurrentUserRefresh
 from app.exceptions import UsernameTakenException, EmailTakenException
 from app.schemas import RequestLogin, RequestRegister
 from app.utils.auth import authenticate_user, get_password_hash, set_access_token, \
@@ -72,3 +72,11 @@ async def get_user_page(user: UserById, current_user: OptionalCurrentUser, reque
         return RedirectResponse(request.url_for('get_me_page'))
     return templates.TemplateResponse(request=request, name='get_user.html',
                                       context={'current_user': current_user, 'user': user})
+
+
+@router.post('/refresh')
+async def refresh_tokens(response: Response, current_user: CurrentUserRefresh) -> dict:
+    set_access_token(current_user, response)
+    set_refresh_token(current_user, response)
+    logging.info(f'Updated tokens for user with id {current_user.id}')
+    return {'message': 'successfully logged out'}
