@@ -69,6 +69,6 @@ async def delete_image(image: ImageById, current_user: CurrentUser) -> dict:
 async def change_image_visibility(image: ImageById, current_user: CurrentUser) -> dict:
     if image.author_id != current_user.id:
         raise NoAccessToImageException()
-    await ImageDAO.update_one_by_id(image.id, is_public=not image.is_public)
-    logging.info(f'Changed visibility of image with id {image.id}. is_public = {not image.is_public}')
+    is_public = await ImageDAO.change_visibility_by_id(image.id)
+    logging.info(f'Changed visibility of image with id {image.id}. is_public = {is_public}')
     return {'message': 'successfully changed image visibility'}

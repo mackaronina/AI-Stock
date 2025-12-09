@@ -1,3 +1,4 @@
+import uuid
 from typing import Literal, Sequence
 
 from sqlalchemy import select, desc, asc, func
@@ -45,6 +46,15 @@ class ImageDAO(BaseDAO[Image]):
         result = await session.execute(paginated_query)
         records = result.scalars().all()
         return records, total_pages
+
+    @classmethod
+    @connection
+    async def change_visibility_by_id(cls, image_id: uuid.UUID, session: AsyncSession) -> bool | None:
+        image = await session.get(Image, image_id)
+        if image is None:
+            return None
+        image.is_public = not image.is_public
+        return image.is_public
 
 
 class LikeDAO(BaseDAO[Like]):
