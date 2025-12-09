@@ -27,9 +27,11 @@ class CloudflareSettings(ConfigBase):
 class AuthSettings(ConfigBase):
     model_config = SettingsConfigDict(env_prefix='AUTH_')
     SECRET_KEY: SecretStr
-    COOKIE_NAME: str = 'Authorization'
+    ACCESS_TOKEN_COOKIE_NAME: str = 'user_access_token'
+    REFRESH_TOKEN_COOKIE_NAME: str = 'user_refresh_token'
     ALGORITHM: str = 'HS256'
-    TOKEN_EXPIRE_MINUTES: int = 60
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    REFRESH_TOKEN_EXPIRE_DAYS: int = 7
 
 
 class Settings(ConfigBase):

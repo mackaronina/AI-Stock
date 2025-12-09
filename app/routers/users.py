@@ -4,12 +4,12 @@ from fastapi import Response, APIRouter, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 
-from app.config import SETTINGS
 from app.dao.dao import UserDAO
 from app.dependencies import CurrentUser, OptionalCurrentUser, UserById
 from app.exceptions import UsernameTakenException, EmailTakenException
 from app.schemas import RequestLogin, RequestRegister
-from app.utils.auth import authenticate_user, create_access_token, get_password_hash
+from app.utils.auth import authenticate_user, get_password_hash, set_access_token, \
+    set_refresh_token, delete_access_token, delete_refresh_token
 
 router = APIRouter(prefix='/users')
 templates = Jinja2Templates(directory='templates')
@@ -18,8 +18,8 @@ templates = Jinja2Templates(directory='templates')
 @router.post('/login')
 async def login_user(login_data: RequestLogin, response: Response) -> dict:
     user = await authenticate_user(login_data.username, login_data.password)
-    access_token = create_access_token(user)
-    response.set_cookie(key=SETTINGS.AUTH.COOKIE_NAME, value=access_token)
+    set_access_token(user, response)
+    set_refresh_token(user, response)
     logging.info(f'Logged in user with id {user.id}')
     return {'message': 'successfully logged in'}
 
@@ -31,7 +31,8 @@ async def login_user_page(current_user: OptionalCurrentUser, request: Request) -
 
 @router.post('/logout')
 async def logout_user(response: Response) -> dict:
-    response.delete_cookie(key=SETTINGS.AUTH.COOKIE_NAME)
+    delete_access_token(response)
+    delete_refresh_token(response)
     return {'message': 'successfully logged out'}
 
 

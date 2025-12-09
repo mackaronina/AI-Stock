@@ -17,7 +17,7 @@ async def main() -> None:
     app.include_router(images.router)
     app.include_router(users.router)
     app.include_router(likes.router)
-    
+
     init_exception_handlers(app)
 
     logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
