@@ -1,6 +1,7 @@
 import uuid
 from typing import Self, Literal, Annotated
 
+from fastapi import Query
 from pydantic import BaseModel, EmailStr, Field, model_validator, ConfigDict, AfterValidator
 
 
@@ -25,6 +26,9 @@ class RequestSearchQuery(Base):
     term: Annotated[str | None, AfterValidator(validate_search_term)] = None
     page: int = Field(default=1, ge=1)
     page_size: int = Field(default=9, ge=1, le=100)
+
+
+SearchQuery = Annotated[RequestSearchQuery, Query()]
 
 
 class RequestGenerateImage(Base):

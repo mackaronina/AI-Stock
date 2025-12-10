@@ -7,15 +7,15 @@ from fastapi import FastAPI
 from app.config import SETTINGS
 from app.database import create_tables
 from app.exception_handlers import init_exception_handlers
-from app.routers import home, images, users, likes
+from app.routers import pages, images, auth, likes
 
 
 async def main() -> None:
     app = FastAPI()
 
-    app.include_router(home.router)
+    app.include_router(pages.router)
     app.include_router(images.router)
-    app.include_router(users.router)
+    app.include_router(auth.router)
     app.include_router(likes.router)
 
     init_exception_handlers(app)

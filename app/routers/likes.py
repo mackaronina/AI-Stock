@@ -7,7 +7,7 @@ from app.dependencies import CurrentUser, ImageById, LikeById
 from app.exceptions import PlacingLikeException, LikeAlreadyPlacedException, NoAccessToLikeException
 from app.schemas import RequestPlaceLike
 
-router = APIRouter(prefix='/likes')
+router = APIRouter(prefix='/api/likes')
 
 
 @router.post('/place')
