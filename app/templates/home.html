@@ -1,5 +1,65 @@
 {% extends "base.html" %}
 {% block content %}
-    <h1>Home page</h1>
-    <p>Generate ai images here</p>
+    <div class="row justify-content-center">
+        <div class="col-lg-8 text-center">
+            <div class="mb-5">
+                <h1 class="display-3 fw-bold text-white mb-3">
+                    Welcome to AI Stock
+                </h1>
+                <p class="lead text-white-50 mb-4">
+                    Generate stunning AI images with the power of artificial intelligence
+                </p>
+                <div class="d-flex gap-3 justify-content-center">
+                    <a href="{{ url_for('create_image_page') }}" class="btn btn-light btn-lg">
+                        <i class="bi bi-magic"></i> Start Creating
+                    </a>
+                    <a href="{{ url_for('get_all_images_page') }}" class="btn btn-light btn-lg">
+                        <i class="bi bi-images"></i> Explore Gallery
+                    </a>
+                </div>
+            </div>
+
+            <div class="row g-4 mt-5">
+                <div class="col-md-4">
+                    <div class="card h-100 bg-white bg-opacity-95">
+                        <div class="card-body text-center p-4">
+                            <div class="fs-1 text-primary mb-3">
+                                <i class="bi bi-lightning-charge"></i>
+                            </div>
+                            <h5 class="card-title fw-bold">Fast Generation</h5>
+                            <p class="card-text text-muted">
+                                Create amazing images in seconds with our AI technology
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 bg-white bg-opacity-95">
+                        <div class="card-body text-center p-4">
+                            <div class="fs-1 text-primary mb-3">
+                                <i class="bi bi-palette"></i>
+                            </div>
+                            <h5 class="card-title fw-bold">Creative Control</h5>
+                            <p class="card-text text-muted">
+                                Transform your ideas into stunning visual art
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 bg-white bg-opacity-95">
+                        <div class="card-body text-center p-4">
+                            <div class="fs-1 text-primary mb-3">
+                                <i class="bi bi-people"></i>
+                            </div>
+                            <h5 class="card-title fw-bold">Community</h5>
+                            <p class="card-text text-muted">
+                                Share your creations and explore others' work
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

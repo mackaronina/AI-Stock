@@ -1,47 +1,118 @@
 {% extends "base.html" %}
 {% block content %}
-    <h1>Registration</h1>
-    <label for="username">Username</label>
-    <input type="text" id="username" name="username">
-    <label for="email">Email</label>
-    <input type="email" id="email" name="email">
-    <label for="password">Password</label>
-    <input type="password" id="password" name="password">
-    <label for="confirm_password">Confirm password</label>
-    <input type="password" id="confirm_password" name="confirm_password">
-    <button id="signup_button">Sign up</button>
+    <div class="row justify-content-center">
+        <div class="col-lg-5 col-md-7">
+            <div class="card">
+                <div class="card-body p-5">
+                    <h2 class="card-title text-center mb-4">
+                        <i class="bi bi-person-plus text-primary"></i> Create Account
+                    </h2>
+                    <p class="text-muted text-center mb-4">Join our creative community</p>
+
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input
+                                type="text"
+                                class="form-control"
+                                id="username"
+                                name="username"
+                                placeholder="Choose a username"
+                        >
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input
+                                type="email"
+                                class="form-control"
+                                id="email"
+                                name="email"
+                                placeholder="Enter your email"
+                        >
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input
+                                type="password"
+                                class="form-control"
+                                id="password"
+                                name="password"
+                                placeholder="Create a password"
+                        >
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="confirm_password" class="form-label">Confirm Password</label>
+                        <input
+                                type="password"
+                                class="form-control"
+                                id="confirm_password"
+                                name="confirm_password"
+                                placeholder="Confirm your password"
+                        >
+                    </div>
+
+                    <button id="signup_button" class="btn btn-primary w-100 py-2 mb-3">
+                        <i class="bi bi-person-check"></i> Sign Up
+                    </button>
+
+                    <div class="text-center">
+                        <p class="text-muted mb-0">
+                            Already have an account?
+                            <a href="{{ url_for('login_user_page') }}" class="text-decoration-none">Log in</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         const username = document.getElementById("username");
         const email = document.getElementById("email");
         const password = document.getElementById("password");
         const confirm_password = document.getElementById("confirm_password");
         const button = document.getElementById("signup_button");
+
         button.addEventListener("click", async () => {
+            if (!username.value.trim() || !email.value.trim() ||
+                !password.value.trim() || !confirm_password.value.trim()) {
+                showErrorText("Please fill in all fields");
+                return;
+            }
+
             const body = JSON.stringify({
                 username: username.value,
                 email: email.value,
                 password: password.value,
                 confirm_password: confirm_password.value
             });
-            const response = await fetch("{{ url_for('register_user') }}", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: body
-            });
-            if (response.ok) {
-                await fetch("{{ url_for('login_user') }}", {
+
+            try {
+                const response = await fetch("{{ url_for('register_user') }}", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
                     },
                     body: body
                 });
-                redirectTo("{{ url_for('home_page') }}");
-            } else {
-                const result = await response.json();
-                showErrorText(result.detail);
+
+                if (response.ok) {
+                    await fetch("{{ url_for('login_user') }}", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: body
+                    });
+                    redirectTo("{{ url_for('home_page') }}");
+                } else {
+                    const result = await response.json();
+                    showErrorText(result.detail);
+                }
+            } catch (error) {
+                showErrorText("An error occurred. Please try again.");
             }
         });
     </script>
