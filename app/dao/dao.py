@@ -1,7 +1,7 @@
 import uuid
 from typing import Literal, Sequence
 
-from sqlalchemy import select, desc, asc, func
+from sqlalchemy import select, desc, asc, func, cast, String
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.dao.base import BaseDAO
@@ -23,7 +23,7 @@ class ImageDAO(BaseDAO[Image]):
         query = select(Image).filter_by(**filter_by)
         if term is not None:
             if term.startswith('#'):
-                query = query.where(Image.tags.contains(term))
+                query = query.where(cast(Image.tags, String).contains(term))
             else:
                 query = query.where(Image.prompt.contains(term))
         if sort_by == 'date':
