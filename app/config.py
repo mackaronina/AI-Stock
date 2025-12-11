@@ -3,8 +3,21 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class ConfigBase(BaseSettings):
-    model_config = SettingsConfigDict(env_file='.env', env_file_encoding='utf-8', extra='ignore',
+    model_config = SettingsConfigDict(env_file='../.env', env_file_encoding='utf-8', extra='ignore',
                                       case_sensitive=False)
+
+
+class PostgresSettings(ConfigBase):
+    model_config = SettingsConfigDict(env_prefix='POSTGRES_')
+    USER: str
+    PASSWORD: SecretStr
+    HOST: str
+    PORT: int
+    NAME: str
+
+    def get_url(self) -> str:
+        return (f'postgresql+asyncpg://{self.USER}:{self.PASSWORD.get_secret_value()}'
+                f'@{self.HOST}:{self.PORT}/{self.NAME}')
 
 
 class ImgbbSettings(ConfigBase):
@@ -35,6 +48,7 @@ class AuthSettings(ConfigBase):
 
 
 class Settings(ConfigBase):
+    POSTGRES: PostgresSettings = Field(default_factory=PostgresSettings)
     IMGBB: ImgbbSettings = Field(default_factory=ImgbbSettings)
     CLOUDFLARE: CloudflareSettings = Field(default_factory=CloudflareSettings)
     AUTH: AuthSettings = Field(default_factory=AuthSettings)

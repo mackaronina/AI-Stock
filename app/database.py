@@ -7,7 +7,10 @@ from sqlalchemy import func, ForeignKey, JSON, UniqueConstraint
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncAttrs
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
-engine = create_async_engine('sqlite+aiosqlite:///db.sqlite3')
+from app.config import SETTINGS
+
+engine = create_async_engine(SETTINGS.POSTGRES.get_url())
+# 'sqlite+aiosqlite:///db.sqlite3' for sqlite database
 
 async_session = async_sessionmaker(engine, expire_on_commit=False)
 
