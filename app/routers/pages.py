@@ -2,12 +2,13 @@ from fastapi import Request, APIRouter
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 
+from app.config import BASE_DIR
 from app.dao.dao import ImageDAO
 from app.dependencies import OptionalCurrentUser, CurrentUser, UserById, ImageById, LikeByImage
 from app.schemas import SearchQuery
 
 router = APIRouter()
-templates = Jinja2Templates(directory='templates')
+templates = Jinja2Templates(directory=f'{BASE_DIR}/app/templates')
 
 
 @router.get('/')

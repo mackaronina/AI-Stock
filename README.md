@@ -25,12 +25,16 @@ working authorization and authentication
 * SQLAlchemy 2.x (Object–relational mapper (ORM) for database interactions)
 * [Cloudflare Workers AI](https://developers.cloudflare.com/workers-ai/) (API for accessing AI models. Has a free plan)
 * [ImgBB API](https://api.imgbb.com) (Free image hosting and sharing service)
+* Docker (Platform that enables developers to run containerized applications)
 
 ### Installation
 
 * Start the PostgreSQL database using any method
 * Edit file example.env and fill it with your data including the data for connecting to the database, then rename it to
   .env. This file contains all the settings for the web application
-* Run the python script with the following commands:  
-  `pip install -r requirements.txt`  
-  `python app/main.py`
+* Run docker container with commands:  
+  `docker build -t image .`  
+  `docker run -p 8000:8000 image`
+
+Replace 8000 with your port if you are using a different port. After this, the application will be available
+at http://localhost:8000

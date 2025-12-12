@@ -1,9 +1,13 @@
+from pathlib import Path
+
 from pydantic import SecretStr, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+BASE_DIR = Path(__file__).resolve().parent.parent
+
 
 class ConfigBase(BaseSettings):
-    model_config = SettingsConfigDict(env_file='../.env', env_file_encoding='utf-8', extra='ignore',
+    model_config = SettingsConfigDict(env_file=f'{BASE_DIR}/.env', env_file_encoding='utf-8', extra='ignore',
                                       case_sensitive=False)
 
 
@@ -52,7 +56,7 @@ class Settings(ConfigBase):
     IMGBB: ImgbbSettings = Field(default_factory=ImgbbSettings)
     CLOUDFLARE: CloudflareSettings = Field(default_factory=CloudflareSettings)
     AUTH: AuthSettings = Field(default_factory=AuthSettings)
-    HOST: str = '127.0.0.1'
+    HOST: str = '0.0.0.0'
     PORT: int = 8000
 
 
