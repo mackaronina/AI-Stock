@@ -21,6 +21,7 @@ async def get_current_user_by_refresh_token(request: Request) -> User:
         raise UserNotLoggedInException()
 
 
+# Used only for token refreshes
 CurrentUserRefresh = Annotated[User, Depends(get_current_user_by_refresh_token)]
 
 
@@ -33,6 +34,7 @@ async def get_current_user(request: Request) -> User:
         raise UserNotLoggedInException()
 
 
+# Used for endpoints that require authorization
 CurrentUser = Annotated[User, Depends(get_current_user)]
 
 
@@ -43,6 +45,7 @@ async def get_current_user_or_none(request: Request) -> User | None:
         return None
 
 
+# Used for endpoints with optional authorization
 OptionalCurrentUser = Annotated[User | None, Depends(get_current_user_or_none)]
 
 
