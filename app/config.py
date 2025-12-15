@@ -56,6 +56,8 @@ class Settings(ConfigBase):
     IMGBB: ImgbbSettings = Field(default_factory=ImgbbSettings)
     CLOUDFLARE: CloudflareSettings = Field(default_factory=CloudflareSettings)
     AUTH: AuthSettings = Field(default_factory=AuthSettings)
+    USE_SQLITE: bool = False
+    SQLITE_URL: str = 'sqlite+aiosqlite:///db.sqlite3'
     HOST: str = '0.0.0.0'
     PORT: int = 8000
 
