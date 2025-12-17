@@ -46,40 +46,5 @@
         </div>
     </div>
 
-    <script>
-        const username = document.getElementById("username");
-        const password = document.getElementById("password");
-        const button = document.getElementById("login_button");
-
-        button.addEventListener("click", async () => {
-            if (!username.value.trim() || !password.value.trim()) {
-                showErrorText("Please fill in all fields");
-                return;
-            }
-
-            const body = JSON.stringify({
-                username: username.value,
-                password: password.value
-            });
-
-            try {
-                const response = await fetch("{{ url_for('login_user') }}", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: body
-                });
-
-                if (response.ok) {
-                    redirectTo("{{ url_for('home_page') }}");
-                } else {
-                    const result = await response.json();
-                    showErrorText(result.detail);
-                }
-            } catch (error) {
-                showErrorText("An error occurred. Please try again.");
-            }
-        });
-    </script>
+    <script src="/static/js/login_user.js"></script>
 {% endblock %}

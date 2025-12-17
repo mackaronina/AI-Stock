@@ -1,84 +1,37 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-lg-6">
-        <div class="card">
-            <div class="card-body p-5">
-                <h2 class="card-title text-center mb-4">
-                    <i class="bi bi-magic text-primary"></i> Create Your Image
-                </h2>
-                <p class="text-muted text-center mb-4">
-                    Describe your vision and watch AI bring it to life
-                </p>
-                
-                <div class="mb-4">
-                    <label for="prompt" class="form-label fw-semibold">Enter your prompt</label>
-                    <textarea 
-                        class="form-control" 
-                        id="prompt" 
-                        name="prompt" 
-                        rows="4" 
-                        placeholder="A serene landscape with mountains and a lake at sunset..."
-                    ></textarea>
-                    <div class="form-text">
-                        Be specific and descriptive for best results
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-body p-5">
+                    <h2 class="card-title text-center mb-4">
+                        <i class="bi bi-magic text-primary"></i> Create Your Image
+                    </h2>
+                    <p class="text-muted text-center mb-4">
+                        Describe your vision and watch AI bring it to life
+                    </p>
+
+                    <div class="mb-4">
+                        <label for="prompt" class="form-label fw-semibold">Enter your prompt</label>
+                        <textarea
+                                class="form-control"
+                                id="prompt"
+                                name="prompt"
+                                rows="4"
+                                placeholder="A serene landscape with mountains and a lake at sunset..."
+                        ></textarea>
+                        <div class="form-text">
+                            Be specific and descriptive for best results
+                        </div>
                     </div>
+
+                    <button id="create_button" class="btn btn-primary w-100 py-3">
+                        <i class="bi bi-stars"></i> Generate Image
+                    </button>
                 </div>
-                
-                <button id="create_button" class="btn btn-primary w-100 py-3">
-                    <i class="bi bi-stars"></i> Generate Image
-                </button>
             </div>
         </div>
     </div>
-</div>
 
-<script>
-    const prompt = document.getElementById("prompt");
-    const button = document.getElementById("create_button");
-
-    function disableButton() {
-        button.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Generating...';
-        button.disabled = true;
-    }
-
-    function enableButton() {
-        button.innerHTML = '<i class="bi bi-stars"></i> Generate Image';
-        button.disabled = false;
-    }
-
-    button.addEventListener("click", async () => {
-        if (!prompt.value.trim()) {
-            showErrorText("Please enter a prompt");
-            return;
-        }
-        
-        disableButton();
-        const body = JSON.stringify({
-            prompt: prompt.value
-        });
-        
-        try {
-            const response = await fetch("{{ url_for('create_image') }}", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: body
-            });
-            
-            if (response.ok) {
-                const result = await response.json();
-                redirectTo(result.image_url);
-            } else {
-                const result = await response.json();
-                showErrorText(result.detail);
-                enableButton();
-            }
-        } catch (error) {
-            showErrorText("An error occurred. Please try again.");
-            enableButton();
-        }
-    });
-</script>
+    <script src="/static/js/create_image.js"></script>
 {% endblock %}

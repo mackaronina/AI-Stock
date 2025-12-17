@@ -80,19 +80,5 @@
         </div>
     </div>
 
-    <script>
-        const logoutButton = document.getElementById("logout_button");
-        logoutButton.addEventListener("click", async () => {
-            await fetch("{{ url_for('logout_user') }}", {method: "POST"});
-            redirectTo("{{ url_for('home_page') }}");
-        });
-
-        const deleteButton = document.getElementById("delete_button");
-        deleteButton.addEventListener("click", async () => {
-            if (confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
-                await fetch("{{ url_for('delete_user') }}", {method: "DELETE"});
-                redirectTo("{{ url_for('home_page') }}");
-            }
-        });
-    </script>
+    <script src="/static/js/get_me.js"></script>
 {% endblock %}

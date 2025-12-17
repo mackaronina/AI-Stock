@@ -83,50 +83,5 @@
         </div>
     </div>
 
-    <script>
-        {% if current_user and current_user.id==image.author_id %}
-            const visibilityButton = document.getElementById("visibility_button");
-            visibilityButton.addEventListener("click", async () => {
-                await fetch("{{ url_for('change_image_visibility', image_id=image.id) }}", {method: "PATCH"});
-                refreshPage();
-            });
-
-            const deleteButton = document.getElementById("delete_button");
-            deleteButton.addEventListener("click", async () => {
-                if (confirm("Are you sure you want to delete this image?")) {
-                    await fetch("{{ url_for('delete_image', image_id=image.id) }}", {method: "DELETE"});
-                    redirectTo("{{ url_for('get_me_page') }}");
-                }
-            });
-        {% endif %}
-
-        {% if like %}
-            const deleteLikeButton = document.getElementById("delete_like_button");
-            deleteLikeButton.addEventListener("click", async () => {
-                const response = await fetch("{{ url_for('delete_like', like_id=like.id) }}", {method: "DELETE"});
-                if (response.ok)
-                    refreshPage();
-            });
-        {% else %}
-            const placeLikeButton = document.getElementById("place_like_button");
-            placeLikeButton.addEventListener("click", async () => {
-                {% if current_user %}
-                    const body = JSON.stringify({
-                        to_image_id: "{{ image.id }}"
-                    });
-                    const response = await fetch("{{ url_for('place_like') }}", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: body
-                    });
-                    if (response.ok)
-                        refreshPage();
-                {% else %}
-                    redirectTo("{{ url_for('login_user_page') }}");
-                {% endif %}
-            });
-        {% endif %}
-    </script>
+    <script src="/static/js/get_image.js"></script>
 {% endblock %}
