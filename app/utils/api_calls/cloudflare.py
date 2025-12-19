@@ -1,6 +1,6 @@
 import logging
 
-from curl_cffi.requests import AsyncSession
+from aiohttp import ClientSession, ClientTimeout
 from pydantic import BaseModel, Field
 
 from app.config import SETTINGS
@@ -21,10 +21,11 @@ async def generate_image_from_prompt(prompt: str) -> str:
         'height': SETTINGS.CLOUDFLARE.IMAGE_HEIGHT,
         'width': SETTINGS.CLOUDFLARE.IMAGE_WIDTH,
     }
-    async with AsyncSession() as session:
-        resp = await session.post(link, json=data, headers=headers, impersonate='chrome110',
-                                  timeout=SETTINGS.CLOUDFLARE.REQUEST_TIMEOUT_SECONDS)
-        img_data = resp.json()['result']['image']
+    async with ClientSession() as session:
+        resp = await session.post(link, json=data, headers=headers,
+                                  timeout=ClientTimeout(total=SETTINGS.CLOUDFLARE.REQUEST_TIMEOUT_SECONDS))
+        json = await resp.json()
+        img_data = json['result']['image']
         return img_data
 
 
@@ -56,9 +57,10 @@ async def generate_tags_for_image(img_data: str, prompt: str) -> list[str]:
         ],
         'guided_json': TagsResponseFormat.model_json_schema()
     }
-    async with AsyncSession() as session:
-        resp = await session.post(link, json=data, headers=headers, impersonate='chrome110',
-                                  timeout=SETTINGS.CLOUDFLARE.REQUEST_TIMEOUT_SECONDS)
-        tags = resp.json()['result']['response']['tags']
+    async with ClientSession() as session:
+        resp = await session.post(link, json=data, headers=headers,
+                                  timeout=ClientTimeout(total=SETTINGS.CLOUDFLARE.REQUEST_TIMEOUT_SECONDS))
+        json = await resp.json()
+        tags = json['result']['response']['tags']
         tags = [tag.lower().replace(' ', '_').replace('-', '_') for tag in tags]
         return tags
