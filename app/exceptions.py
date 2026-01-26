@@ -51,6 +51,11 @@ class GeneratingImageException(CustomHTTPException):
     detail = 'An error occurred while generating the image. Please try again'
 
 
+class NoGenerationLeftException(CustomHTTPException):
+    status_code = status.HTTP_400_BAD_REQUEST
+    detail = 'Your generations for today are over. Try again tomorrow'
+
+
 class NoAccessToImageException(CustomHTTPException):
     status_code = status.HTTP_400_BAD_REQUEST
     detail = 'You dont have access to this image'

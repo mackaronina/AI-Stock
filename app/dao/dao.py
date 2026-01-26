@@ -1,15 +1,30 @@
 import uuid
 from typing import Literal, Sequence
 
-from sqlalchemy import select, desc, asc, func
+from sqlalchemy import select, desc, asc, func, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.config import SETTINGS
 from app.dao.base import BaseDAO
 from app.database import User, Image, Like, connection, Tag
 
 
 class UserDAO(BaseDAO[User]):
     model = User
+
+    @classmethod
+    @connection
+    async def update_daily_generations(cls, session: AsyncSession) -> None:
+        await session.execute(update(User).values(generations_left=SETTINGS.GENERATIONS_PER_DAY))
+
+    @classmethod
+    @connection
+    async def decrease_generations_by_id(cls, user_id: uuid.UUID, session: AsyncSession) -> int | None:
+        user = await cls.find_one_or_none_by_id(user_id, session=session)
+        if user is None:
+            return None
+        user.generations_left -= 1
+        return int(user.generations_left)
 
 
 class ImageDAO(BaseDAO[Image]):

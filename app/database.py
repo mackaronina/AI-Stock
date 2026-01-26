@@ -29,6 +29,7 @@ class User(Base):
     username: Mapped[str] = mapped_column(unique=True)
     email: Mapped[str] = mapped_column(unique=True)
     hashed_password: Mapped[str]
+    generations_left: Mapped[int] = mapped_column(default=SETTINGS.GENERATIONS_PER_DAY)
     images: Mapped[list['Image']] = relationship(back_populates='author', cascade='all, delete-orphan', lazy='subquery')
     likes: Mapped[list['Like']] = relationship(back_populates='from_user', cascade='all, delete-orphan',
                                                lazy='subquery')

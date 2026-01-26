@@ -2,12 +2,14 @@ import asyncio
 import logging
 
 import uvicorn
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
 from app.config import SETTINGS, BASE_DIR
 from app.database import create_tables
 from app.exception_handlers import init_exception_handlers
+from app.jobs.update_daily_generations import job_update_daily_generations
 from app.routers import pages, images, auth, likes
 
 
@@ -22,6 +24,10 @@ async def main() -> None:
     app.include_router(likes.router)
 
     init_exception_handlers(app)
+
+    scheduler = AsyncIOScheduler(timezone=SETTINGS.TIME_ZONE)
+    scheduler.add_job(job_update_daily_generations, 'cron', hour=0, minute=1)
+    scheduler.start()
 
     logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
     logging.info('Starting server')
