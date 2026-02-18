@@ -41,7 +41,7 @@ class ImageDAO(BaseDAO[Image]):
             if term.startswith('#'):
                 query = query.join(Image.tags).where(Tag.name == term)
             else:
-                query = query.where(Image.prompt.contains(term))
+                query = query.where(Image.prompt.icontains(term))
         if sort_by == 'date':
             query = query.order_by(order_function(Image.created_at))
         elif sort_by == 'likes':
