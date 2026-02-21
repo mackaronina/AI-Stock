@@ -2,6 +2,7 @@ import logging
 
 from fastapi import APIRouter
 from fastapi import Request
+from starlette.responses import RedirectResponse
 
 from app.dao.dao import ImageDAO, UserDAO
 from app.dependencies import CurrentUser, ImageById
@@ -11,6 +12,13 @@ from app.utils.api_calls.cloudflare import generate_image_from_prompt, generate_
 from app.utils.api_calls.imgbb import upload_image_to_imgbb
 
 router = APIRouter(prefix='/api/images')
+
+
+@router.get('/random')
+async def random_image(request: Request):
+    image = await ImageDAO.get_random()
+    logging.info(f'Random image with id {image.id}')
+    return RedirectResponse(request.url_for('get_image_page', image_id=str(image.id)))
 
 
 @router.post('/create')

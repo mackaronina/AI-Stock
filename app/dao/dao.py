@@ -77,6 +77,15 @@ class ImageDAO(BaseDAO[Image]):
                 tag = await TagDAO.add(name=tag_name, session=session)
             image.tags.append(tag)
 
+    @classmethod
+    @connection
+    async def get_random(cls, session: AsyncSession) -> Image | None:
+        result = await session.execute(
+            select(Image).where(Image.is_public == True).order_by(func.random()).limit(1)
+        )
+        image = result.scalars().one_or_none()
+        return image
+
 
 class TagDAO(BaseDAO[Tag]):
     model = Tag
