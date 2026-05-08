@@ -30,8 +30,8 @@ working authorization and authentication. Try it here: https://ai-stock-frht.onr
 ### Installation
 
 * Start the PostgreSQL database using any method
-* Edit file example.env and fill it with your data including the data for connecting to the database, then rename it to
-  .env. This file contains all the settings for the web application
+* Edit file `example.env` and fill it with your data including the data for connecting to the database, then rename it to
+  `.env`. This file contains all the settings for the web application
 * Run docker container with commands:  
   `docker build -t image .`  
   `docker run -p 8000:8000 image`
